@@ -12,7 +12,7 @@ class ProductTest < ActiveSupport::TestCase
 
 	test "product price must be positive" do
 		product = Product.new(
-			title: "My book title",
+			title: "My book",
 			description: "yyy",
 			image_url: "zzz.jpg")
 		product.price = -1
@@ -29,7 +29,7 @@ class ProductTest < ActiveSupport::TestCase
 
 	def new_product(image_url)
 		Product.new(
-			title: "My book title",
+			title: "My book",
 			description: "yyy",
 			price: 1,
 			image_url: image_url)
@@ -56,5 +56,18 @@ class ProductTest < ActiveSupport::TestCase
 			image_url: "fred.gif")
 		assert !product.save
 		assert_equal "has already been taken", product.errors[:title].join('; ')
+	end
+
+	test "product title must be smaller than 10 characters" do
+		product = Product.new(
+			title: "asdfghjklo",
+			description: "yyy",
+			price: 1,
+			image_url: "zzz.gif")
+		assert product.valid?
+
+		product.title = "asdfghjklop"
+		assert product.invalid?
+		assert_equal "is too long (maximum is 10 characters)", product.errors[:title].join('; ')
 	end
 end
